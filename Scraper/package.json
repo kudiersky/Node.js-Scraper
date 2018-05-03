@@ -1,0 +1,29 @@
+{
+  "name": "scraper",
+  "version": "1.0.0",
+  "description": "Node.js-Scraper",
+  "main": "app.js",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "cheerio": "^1.0.0-rc.2",
+    "json2csv": "^4.1.2",
+    "promise": "^8.0.1",
+    "request": "^2.85.0",
+    "request-promise": "^4.2.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jake Kudiersky",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kudiersky/Node.js-Scraper"
+  },
+  "keywords": [
+    "Node.js",
+    "web",
+    "Scraper"
+  ]
+}
