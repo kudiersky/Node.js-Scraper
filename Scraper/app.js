@@ -1,6 +1,4 @@
-
-
-///////////// Import the dependencies/////////////////////////////////////////////////////////////
+///////////// Import the dependencies///////////////////////////////////////////
 const http = require('http');
 const fs = require("fs");
 const cheerio = require("cheerio")
@@ -11,9 +9,8 @@ const request = require('request');
 const domain = "http://shirts4mike.com/"
 const shirtURLs =[];
 const shirts = [];
-const myArray = [1,2,3,4];
 
-/////////////////////////// function used to format Title //////////////////////////////////////////////
+/////////////////////////// function used to format Title //////////////////////
 
 function formatTitle(Title){
 var result = Title.slice(4)
@@ -58,27 +55,24 @@ var getURLs = {
         return cheerio.load(body);
     }
 };
-//////////////////////////////////////////////////////////////problem area //////////////////////////////////////
+//////////////////////////////////////////////////////////////problem area /////
 rp(getURLs)
     .then(function ($) {
       $('.products li a').each(function (i, elem) {
-      let URL = $(this).attr('href');
+      let URL = domain+$(this).attr('href');
       shirtURLs.push(URL);
       });
       return(shirtURLs)
     })
-    .then((function () {
-      console.log('here')
-      let a = shirtURLs.map(scrapeURL);
-      console.log(a)
+    .then((function (shirtURLs) {  //unlike the function above. the shirs.push(shirt) doesnt act as expected as the subsequent
+                                  //.then() says shirt.length = 0.
 
-    }
-    ))
-.then(function (b) {
-////////////////////////////////////////////////////////////////problem area //////////////////////////////////////
-console.log(b)
+      shirtURLs.forEach(scrapeURL)
 
-})
+      return shirts;
+
+    }))
+    .then(function(){console.log(shirts.length)})
 .catch(function (err){
   if (err.statusCode === 404){
     console.log(`Error ${err.statusCode}: There was a problem connecting to ${domain}`)
@@ -89,15 +83,24 @@ console.log(b)
 });
 
 function scrapeURL(element) {
+      request(element, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          const $ = cheerio.load(body);
 
-        shirt ={
-          title: '123',
-          price : element
+
+          let Title = $('.shirt-details h1').text();
+           $title = formatTitle(Title);
+           $price = $('.price').text();
+           $imgURL =  $('.shirt-picture img').attr('src');
+           $time = new Date().toUTCString();
+
+           var shirt = {
+            title: $title,
+            price : $price,
+            image : $imgURL,
+            time: $time,
           };
-
-          return shirt
-        }
-
-
-
-    //////////////////////////////////////////////////////////////////////////////////
+          shirts.push(shirt)
+        }///put in error
+      })
+    };
